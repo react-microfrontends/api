@@ -12,7 +12,7 @@ const axiosInstance = axios.create({
 
 const tenMin = 1000 /* ms */ * 60 /* sec */ * 10;
 
-export default function fetchWithCache(url, axiosOptions) {
+export function fetchWithCache(url, axiosOptions) {
   const options = { ...axiosOptions, ...{ method: "get" }, ...{ url } };
   if (cache[url] != undefined) {
     const diff = Date.now() - cache[url].lastPulled;
