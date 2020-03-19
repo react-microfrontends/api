@@ -8,7 +8,11 @@ module.exports = webpackConfigEnv => {
     webpackConfigEnv
   });
 
-  return webpackMerge.smart(defaultConfig, {
+  const rxjsExternals = {
+    externals: [/^rxjs\/?.*$/]
+  };
+
+  return webpackMerge.smart(defaultConfig, rxjsExternals, {
     // modify the webpack config however you'd like to by adding to this object
   });
 };
