@@ -1,14 +1,18 @@
 import { from } from "rxjs";
 import { pluck, tap, map } from "rxjs/operators";
 import axios from "axios";
-import addId from "./addId.js";
+import { fakeAPIFetch as axiosInstance } from "./fake-backend/fake-backend.js";
 
-const baseURL = "https://swapi.co/api/";
-
-const axiosInstance = axios.create({
-  baseURL,
-  timeout: 20000
-});
+/* assuming you were hitting an actual api you'd do something like this
+ * because we're not actually hitting an API now that swapi is down https://github.com/phalt/swapi/issues/147
+ * we're going to fake it
+ */
+// const baseURL = "https://swapi.co/api/";
+//
+// const axiosInstance = axios.create({
+//   baseURL,
+//   timeout: 20000
+// });
 
 const tenMin = 1000 /* ms */ * 60 /* sec */ * 10;
 
@@ -25,24 +29,8 @@ export function fetchWithCache(url, axiosOptions) {
     }
   }
   return from(axiosInstance(options)).pipe(
-    pluck("data"),
-    map(response => {
-      const id = addId(response);
-      if (id) {
-        return { id, ...response };
-      } else if (response.results) {
-        return {
-          ...response,
-          results: response.results.map(result => {
-            const id = addId(result);
-            return { id, ...result };
-          })
-        };
-      } else {
-        return response;
-      }
-    }),
     tap(response => {
+      console.log("response", response);
       cache[options.url] = {
         lastPulled: Date.now(),
         value: response
@@ -50,8 +38,7 @@ export function fetchWithCache(url, axiosOptions) {
       if (response.results && Array.isArray(response.results)) {
         response.results.forEach(item => {
           if (item.url) {
-            const strippedURL = item.url.replace(baseURL, "");
-            cache[strippedURL] = {
+            cache[url] = {
               lastPulled: Date.now(),
               value: item
             };

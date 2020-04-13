@@ -1,4 +1,5 @@
 # React Microfrontends api
+
 An in-browser javascript module for communication with the API
 
 [![CircleCI](https://circleci.com/gh/react-microfrontends/api.svg?style=svg)](https://circleci.com/gh/react-microfrontends/api)
@@ -40,7 +41,7 @@ Go to https://localhost:9001/react-mf-api.js and verify that you are able to loa
 Now, go to https://react.microfrontends.app. In the browser console, run the following:
 
 ```js
-localStorage.setItem('devtools', true);
+localStorage.setItem("devtools", true);
 ```
 
 Refresh the page. Click on the tan / beige rectangle:
