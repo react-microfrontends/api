@@ -15,19 +15,26 @@ export function fakeAPIFetch(options) {
 
 function handleFakeRequestForPeople(url) {
   if (url.includes("page")) {
-    return handleListRequest(url, people, "people", modifyPerson);
+    return handleListRequest(url, people, modifyPerson);
   } else {
-    throw new Error("whoops people");
+    return handleIndividualRequest(url, people, modifyPerson);
   }
 }
 
-function modifyPerson(person) {
-  const films = getFilmsThatMatchId(person.id, "characters");
-  return {
-    ...person,
-    homeworld: `${person.homeworld}`,
-    films
-  };
+function handleFakeRequestForPlanets(url) {
+  if (url.includes("page")) {
+    return handleListRequest(url, planets, modifyPlanet);
+  } else {
+    return handleIndividualRequest(url, planets, modifyPlanet);
+  }
+}
+
+function handleFakeRequestForFilms(url) {
+  if (url.includes("page")) {
+    return handleListRequest(url, films);
+  } else {
+    return handleIndividualRequest(url, films);
+  }
 }
 
 function getFilmsThatMatchId(id, key) {
@@ -40,36 +47,54 @@ function getFilmsThatMatchId(id, key) {
   }, []);
 }
 
-function handleFakeRequestForPlanets(url) {
-  if (url.includes("page")) {
-    return handleListRequest(url, planets, "planets");
-  } else {
-    return handleIndividualRequest(url, planets);
-  }
+function getPeopleThatMatchPlanet(planetId) {
+  return people.reduce((acc, person) => {
+    if (person.fields.homeworld === parseInt(planetId)) {
+      acc.push(`${person.pk}`);
+    }
+    return acc;
+  }, []);
 }
 
-function handleFakeRequestForFilms(url) {
-  if (url.includes("page")) {
-    return handleListRequest(url, films, "films");
-  } else {
-    return handleIndividualRequest(url, films);
-  }
+function modifyPerson(person) {
+  const films = getFilmsThatMatchId(person.id, "characters");
+  return {
+    ...person,
+    homeworld: `${person.homeworld}`,
+    films
+  };
+}
+
+function modifyPlanet(planet) {
+  const films = getFilmsThatMatchId(planet.id, "planets");
+  const residents = getPeopleThatMatchPlanet(planet.id);
+  return {
+    ...planet,
+    films,
+    residents
+  };
 }
 
 function getIndividualThing(id, list) {
   return list[id - 1]; // right now the lists are ordered so that index === id - 1
 }
 
-function handleIndividualRequest(url, list) {
+function handleIndividualRequest(url, list, modifierFn) {
   const regex = /[0-9+]/;
   const match = regex.exec(url);
   const id = match.length === 1 ? parseInt(match) : 1;
   const thing = getIndividualThing(id, list);
-  const response = { id: `${thing.pk}`, ...thing.fields };
+  const base = { id: `${thing.pk}`, ...thing.fields };
+  let response;
+  if (modifierFn) {
+    response = modifierFn(base);
+  } else {
+    response = base;
+  }
   return fakeNetwork(response);
 }
 
-function handleListRequest(url, list, urlPrefix, modifierFn) {
+function handleListRequest(url, list, modifierFn) {
   const regex = /[0-9+]/;
   const match = regex.exec(url);
   const pageNum = match.length === 1 ? parseInt(match) : 1;
