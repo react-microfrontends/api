@@ -42,7 +42,7 @@ function handleIndividualRequest(url, list) {
   const match = regex.exec(url);
   const id = match.length === 1 ? parseInt(match) : 1;
   const thing = list[id - 1]; // right now the lists are ordered so that index === id - 1
-  const response = { id: thing.pk, ...thing.fields };
+  const response = { id: `${thing.pk}`, ...thing.fields };
   return fakeNetwork(response);
 }
 
@@ -59,7 +59,7 @@ function handleListRequest(url, list, urlPrefix) {
       .slice(pageSize * (pageNum - 1), pageSize * pageNum)
       .map(listItem => ({
         ...listItem.fields,
-        id: listItem.pk,
+        id: `${listItem.pk}`,
         url: `/${urlPrefix}/${listItem.pk}`
       })),
     next

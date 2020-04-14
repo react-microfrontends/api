@@ -37,7 +37,7 @@ export function fetchWithCache(url, axiosOptions) {
       if (response.results && Array.isArray(response.results)) {
         response.results.forEach(item => {
           if (item.url) {
-            cache[url] = {
+            cache[item.url] = {
               lastPulled: Date.now(),
               value: item
             };
