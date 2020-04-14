@@ -4,7 +4,7 @@ import { fakeAPIFetch } from "./fake-backend/fake-backend.js";
 
 /* assuming you were hitting an actual api you'd do something like this
  * because we're not actually hitting an API now that swapi is down https://github.com/phalt/swapi/issues/147
- * we're going to fake it
+ * we're going to fake it instead of using axios
  */
 // const baseURL = "https://swapi.co/api/";
 //
