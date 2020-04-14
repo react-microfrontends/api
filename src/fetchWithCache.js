@@ -1,7 +1,6 @@
 import { from } from "rxjs";
 import { pluck, tap, map } from "rxjs/operators";
-import axios from "axios";
-import { fakeAPIFetch as axiosInstance } from "./fake-backend/fake-backend.js";
+import { fakeAPIFetch } from "./fake-backend/fake-backend.js";
 
 /* assuming you were hitting an actual api you'd do something like this
  * because we're not actually hitting an API now that swapi is down https://github.com/phalt/swapi/issues/147
@@ -28,7 +27,7 @@ export function fetchWithCache(url, axiosOptions) {
       );
     }
   }
-  return from(axiosInstance(options)).pipe(
+  return from(fakeAPIFetch(options)).pipe(
     tap(response => {
       cache[options.url] = {
         lastPulled: Date.now(),
