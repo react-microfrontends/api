@@ -60,7 +60,7 @@ function handleListRequest(url, list, urlPrefix) {
       .map(listItem => ({
         ...listItem.fields,
         id: `${listItem.pk}`,
-        url: `/${urlPrefix}/${listItem.pk}`
+        url: `${urlPrefix}/${listItem.pk}/`
       })),
     next
   });
