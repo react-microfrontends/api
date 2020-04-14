@@ -30,7 +30,6 @@ export function fetchWithCache(url, axiosOptions) {
   }
   return from(axiosInstance(options)).pipe(
     tap(response => {
-      console.log("response", response);
       cache[options.url] = {
         lastPulled: Date.now(),
         value: response

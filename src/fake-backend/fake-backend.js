@@ -2,7 +2,6 @@ import people from "./people.json";
 import planets from "./planets.json";
 
 export function fakeAPIFetch(options) {
-  console.log("options", options);
   if (options.url.includes("people")) {
     return handleFakeRequestForPeople(options.url);
   } else if (options.url.includes("planets")) {
