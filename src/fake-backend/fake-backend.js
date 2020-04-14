@@ -9,24 +9,31 @@ export function fakeAPIFetch(options) {
 }
 
 export function handleFakeRequestForPeople(url) {
-  console.log("people", people);
   if (url.includes("page")) {
-    const pageNum = 1;
-    const pageSize = 10;
-    return fakeNetwork(
-      wrapWithData(
-        people
-          .slice(pageSize * (pageNum - 1), pageSize * pageNum)
-          .map(person => ({
-            ...person.fields,
-            id: person.pk,
-            url: `/people/${person.pk}`
-          }))
-      )
-    );
+    return handleListRequest(url, people, "people");
   } else {
     return Promise.resolve({});
   }
+}
+
+function handleListRequest(url, list, urlPrefix) {
+  const regex = /[0-9+]/;
+  const match = regex.exec(url);
+  const pageNum = match.length === 1 ? parseInt(match) : 1;
+  const pageSize = 10;
+  const startingIndex = pageSize * (pageNum - 1);
+  const endingIndex = pageSize * pageNum;
+  const next = endingIndex < list.length;
+  return fakeNetwork({
+    results: list
+      .slice(pageSize * (pageNum - 1), pageSize * pageNum)
+      .map(listItem => ({
+        ...listItem.fields,
+        id: listItem.pk,
+        url: `/${urlPrefix}/${listItem.pk}`
+      })),
+    next
+  });
 }
 
 function wrapWithData(response) {
