@@ -15,10 +15,29 @@ export function fakeAPIFetch(options) {
 
 function handleFakeRequestForPeople(url) {
   if (url.includes("page")) {
-    return handleListRequest(url, people, "people");
+    return handleListRequest(url, people, "people", modifyPerson);
   } else {
     throw new Error("whoops people");
   }
+}
+
+function modifyPerson(person) {
+  const films = getFilmsThatMatchId(person.id, "characters");
+  return {
+    ...person,
+    homeworld: `${person.homeworld}`,
+    films
+  };
+}
+
+function getFilmsThatMatchId(id, key) {
+  return films.reduce((matchingFilms, film) => {
+    const array = film.fields[key];
+    if (array && array.includes && array.includes(parseInt(id))) {
+      matchingFilms.push(`${film.pk}`);
+    }
+    return matchingFilms;
+  }, []);
 }
 
 function handleFakeRequestForPlanets(url) {
@@ -37,16 +56,20 @@ function handleFakeRequestForFilms(url) {
   }
 }
 
+function getIndividualThing(id, list) {
+  return list[id - 1]; // right now the lists are ordered so that index === id - 1
+}
+
 function handleIndividualRequest(url, list) {
   const regex = /[0-9+]/;
   const match = regex.exec(url);
   const id = match.length === 1 ? parseInt(match) : 1;
-  const thing = list[id - 1]; // right now the lists are ordered so that index === id - 1
+  const thing = getIndividualThing(id, list);
   const response = { id: `${thing.pk}`, ...thing.fields };
   return fakeNetwork(response);
 }
 
-function handleListRequest(url, list, urlPrefix) {
+function handleListRequest(url, list, urlPrefix, modifierFn) {
   const regex = /[0-9+]/;
   const match = regex.exec(url);
   const pageNum = match.length === 1 ? parseInt(match) : 1;
@@ -57,13 +80,24 @@ function handleListRequest(url, list, urlPrefix) {
   return fakeNetwork({
     results: list
       .slice(pageSize * (pageNum - 1), pageSize * pageNum)
-      .map(listItem => ({
-        ...listItem.fields,
-        id: `${listItem.pk}`,
-        url: `${urlPrefix}/${listItem.pk}/`
-      })),
+      .map(listItem => {
+        const standardModifications = turnObjectIntoFakeApiResponse(listItem);
+        if (modifierFn) {
+          return modifierFn(standardModifications);
+        } else {
+          return standardModifications;
+        }
+      }),
     next
   });
+}
+
+function turnObjectIntoFakeApiResponse(obj) {
+  return {
+    ...obj.fields,
+    id: `${obj.pk}`,
+    url: `${obj.model.split(".")[1]}/${obj.pk}`
+  };
 }
 
 function wrapWithData(response) {
