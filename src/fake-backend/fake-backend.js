@@ -1,11 +1,14 @@
 import people from "./people.json";
 import planets from "./planets.json";
+import films from "./films.json";
 
 export function fakeAPIFetch(options) {
   if (options.url.includes("people")) {
     return handleFakeRequestForPeople(options.url);
   } else if (options.url.includes("planets")) {
     return handleFakeRequestForPlanets(options.url);
+  } else if (options.url.includes("films")) {
+    return handleFakeRequestForFilms(options.url);
   }
   return Promise.resolve({});
 }
@@ -14,7 +17,7 @@ function handleFakeRequestForPeople(url) {
   if (url.includes("page")) {
     return handleListRequest(url, people, "people");
   } else {
-    return Promise.resolve({});
+    throw new Error("whoops people");
   }
 }
 
@@ -22,8 +25,25 @@ function handleFakeRequestForPlanets(url) {
   if (url.includes("page")) {
     return handleListRequest(url, planets, "planets");
   } else {
-    return Promise.resolve({});
+    return handleIndividualRequest(url, planets);
   }
+}
+
+function handleFakeRequestForFilms(url) {
+  if (url.includes("page")) {
+    return handleListRequest(url, films, "films");
+  } else {
+    return handleIndividualRequest(url, films);
+  }
+}
+
+function handleIndividualRequest(url, list) {
+  const regex = /[0-9+]/;
+  const match = regex.exec(url);
+  const id = match.length === 1 ? parseInt(match) : 1;
+  const thing = list[id - 1]; // right now the lists are ordered so that index === id - 1
+  const response = { id: thing.pk, ...thing.fields };
+  return fakeNetwork(response);
 }
 
 function handleListRequest(url, list, urlPrefix) {
