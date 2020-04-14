@@ -1,16 +1,27 @@
 import people from "./people.json";
+import planets from "./planets.json";
 
 export function fakeAPIFetch(options) {
   console.log("options", options);
   if (options.url.includes("people")) {
     return handleFakeRequestForPeople(options.url);
+  } else if (options.url.includes("planets")) {
+    return handleFakeRequestForPlanets(options.url);
   }
   return Promise.resolve({});
 }
 
-export function handleFakeRequestForPeople(url) {
+function handleFakeRequestForPeople(url) {
   if (url.includes("page")) {
     return handleListRequest(url, people, "people");
+  } else {
+    return Promise.resolve({});
+  }
+}
+
+function handleFakeRequestForPlanets(url) {
+  if (url.includes("page")) {
+    return handleListRequest(url, planets, "planets");
   } else {
     return Promise.resolve({});
   }
