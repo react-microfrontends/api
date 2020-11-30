@@ -28,17 +28,17 @@ export function fetchWithCache(url, axiosOptions) {
     }
   }
   return from(fakeAPIFetch(options)).pipe(
-    tap(response => {
+    tap((response) => {
       cache[options.url] = {
         lastPulled: Date.now(),
-        value: response
+        value: response,
       };
       if (response.results && Array.isArray(response.results)) {
-        response.results.forEach(item => {
+        response.results.forEach((item) => {
           if (item.url) {
             cache[item.url] = {
               lastPulled: Date.now(),
-              value: item
+              value: item,
             };
           }
         });
