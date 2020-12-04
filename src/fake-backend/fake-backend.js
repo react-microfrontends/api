@@ -61,7 +61,7 @@ function modifyPerson(person) {
   return {
     ...person,
     homeworld: `${person.homeworld}`,
-    films
+    films,
   };
 }
 
@@ -71,7 +71,7 @@ function modifyPlanet(planet) {
   return {
     ...planet,
     films,
-    residents
+    residents,
   };
 }
 
@@ -105,7 +105,7 @@ function handleListRequest(url, list, modifierFn) {
   return fakeNetwork({
     results: list
       .slice(pageSize * (pageNum - 1), pageSize * pageNum)
-      .map(listItem => {
+      .map((listItem) => {
         const standardModifications = turnObjectIntoFakeApiResponse(listItem);
         if (modifierFn) {
           return modifierFn(standardModifications);
@@ -113,7 +113,7 @@ function handleListRequest(url, list, modifierFn) {
           return standardModifications;
         }
       }),
-    next
+    next,
   });
 }
 
@@ -121,7 +121,7 @@ function turnObjectIntoFakeApiResponse(obj) {
   return {
     ...obj.fields,
     id: `${obj.pk}`,
-    url: `${obj.model.split(".")[1]}/${obj.pk}`
+    url: `${obj.model.split(".")[1]}/${obj.pk}`,
   };
 }
 
@@ -129,7 +129,7 @@ function wrapWithData(response) {
   return { results: response };
 }
 
-function fakeNetwork(response, delay = 1000) {
+function fakeNetwork(response, delay = 100) {
   return new Promise((res, rej) => {
     setTimeout(() => {
       res(response);
