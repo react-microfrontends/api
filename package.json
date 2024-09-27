@@ -5,6 +5,7 @@
     "analyze": "webpack --mode=production --env analyze",
     "lint": "eslint src",
     "format": "prettier --write .",
+    "check-format": "prettier --check .",
     "test": "jest --passWithNoTests",
     "watch-tests": "jest --watch",
     "coverage": "jest --coverage"
