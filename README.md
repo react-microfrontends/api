@@ -2,8 +2,6 @@
 
 An in-browser javascript module for communication with the API
 
-[![CircleCI](https://circleci.com/gh/react-microfrontends/api.svg?style=svg)](https://circleci.com/gh/react-microfrontends/api)
-
 ## What is this?
 
 This is an example microfrontend repo demonstrating how to use [single-spa](https://single-spa.js.org). You can see the code running at https://react.microfrontends.app.
