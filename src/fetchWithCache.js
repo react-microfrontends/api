@@ -1,5 +1,4 @@
-import { from } from "rxjs";
-import { pluck, tap, map } from "rxjs/operators";
+import { tap, from } from "rxjs";
 import { fakeAPIFetch } from "./fake-backend/fake-backend.js";
 
 /* assuming you were hitting an actual api you'd do something like this
