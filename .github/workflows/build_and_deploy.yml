@@ -68,7 +68,7 @@ jobs:
           destination: react.microfrontends.app/${{ github.event.repository.name }}/${{ github.run_id }}
 
       - name: Update Import Map
-        uses: single-spa/deploy-to-import-map-deployer@main
+        uses: single-spa/action-deploy-to-import-map-deployer@main
         with:
           host: ${{ secrets.DEPLOYER_HOST }}
           username: ${{ secrets.DEPLOYER_USERNAME }}
